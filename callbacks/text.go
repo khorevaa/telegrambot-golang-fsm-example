@@ -17,7 +17,7 @@ import (
 func ProcessName(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	msg := tgbotapi.NewMessage(
 		update.Message.Chat.ID,
-		fmt.Sprintf("<b> %s</b>, please enter your gender?", html.EscapeString(update.Message.Text)))
+		fmt.Sprintf("<b> %s</b>, please select your gender:", html.EscapeString(update.Message.Text)))
 	msg.ReplyMarkup = consts.GendersMarkup
 	msg.ParseMode = "html"
 

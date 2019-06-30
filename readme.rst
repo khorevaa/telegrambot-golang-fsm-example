@@ -2,8 +2,6 @@
 🎛 FSM example for golang telegram bot
 =================================================
 
-**Clone this repository**
-
 ::
 
     git clone https://github.com/uwinx/telegrambot-golang-fsm-example.git fsmExample
