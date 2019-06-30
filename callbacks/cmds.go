@@ -6,6 +6,7 @@ package callbacks
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -17,30 +18,19 @@ import (
 
 // process /start
 func CmdStart(api tgbotapi.BotAPI, update tgbotapi.Update) {
-	buttons := [][]tgbotapi.InlineKeyboardButton{
-		{
-			tgbotapi.NewInlineKeyboardButtonData("🔧", "toggle"),
-			tgbotapi.NewInlineKeyboardButtonData("🧱", "bricks"),
-		},
-		{
-			tgbotapi.NewInlineKeyboardButtonData("⚒", "forge"),
-		},
-		{
-			tgbotapi.NewInlineKeyboardButtonData("📸", "camera"),
-			tgbotapi.NewInlineKeyboardButtonData("📞", "telescope"),
-			tgbotapi.NewInlineKeyboardButtonData("☎️", "phone"),
-		},
-	}
-
 	msg := tgbotapi.NewMessage(
 		update.Message.Chat.ID,
 		HtmlFmt("We'll try to predict you age. But first choose thing you want:", "b"))
 	msg.ReplyMarkup = tgbotapi.InlineKeyboardMarkup{
-		InlineKeyboard: buttons,
+		InlineKeyboard: consts.ItemsKeyboard,
 	}
 	msg.ParseMode = "html"
 
-	_, _ = api.Send(msg)
+	_, err := api.Send(msg)
+
+	if err != nil {
+		log.Panic(err)
+	}
 
 	database.UpdateState(update, consts.ItemChoose)
 }

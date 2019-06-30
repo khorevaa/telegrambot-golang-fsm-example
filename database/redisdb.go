@@ -49,7 +49,6 @@ func init() {
 
 func Scan(prefix string, count int64) []string {
 	var cursor uint64
-	var n int
 	for {
 		var keys []string
 		var err error
@@ -57,11 +56,9 @@ func Scan(prefix string, count int64) []string {
 		if err != nil {
 			panic(err)
 		}
-		n += len(keys)
 		if cursor == 0 {
 			var res []string
 			for key := range keys {
-				log.Println(key)
 				res = append(res, keys[key])
 			}
 			return res
