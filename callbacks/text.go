@@ -1,18 +1,20 @@
 package callbacks
 
 import (
-	"awesomeProject/consts"
-	"awesomeProject/database"
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"html"
 	"log"
 	"strings"
 	"time"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+
+	"fsmExample/consts"
+	"fsmExample/database"
 )
 
-
-func ProcessName(api tgbotapi.BotAPI, update tgbotapi.Update){
+// process
+func ProcessName(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	markup := tgbotapi.ReplyKeyboardMarkup{
 		Selective:       true,
 		OneTimeKeyboard: true,
@@ -35,11 +37,9 @@ func ProcessName(api tgbotapi.BotAPI, update tgbotapi.Update){
 	database.UpdateData(update, map[string]interface{}{"name": update.Message.Text})
 }
 
-
-
 func ProcessGender(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	text := strings.ToLower(update.Message.Text)
-	if !(strings.HasSuffix(text, "male") || strings.HasSuffix(text, "female")){
+	if !(strings.HasSuffix(text, "male") || strings.HasSuffix(text, "female")) {
 		return
 	}
 	msg := tgbotapi.NewMessage(
@@ -51,7 +51,7 @@ func ProcessGender(api tgbotapi.BotAPI, update tgbotapi.Update) {
 
 	message, err := api.Send(msg)
 
-	if err != nil{
+	if err != nil {
 		log.Panic(err)
 	}
 
@@ -65,10 +65,10 @@ func ProcessGender(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	age := randInt(5, 40)
 	edit := tgbotapi.EditMessageTextConfig{
 		BaseEdit: tgbotapi.BaseEdit{
-			ChatID:      message.Chat.ID,
-			MessageID:   message.MessageID,
+			ChatID:    message.Chat.ID,
+			MessageID: message.MessageID,
 		},
-		Text:      fmt.Sprintf(
+		Text: fmt.Sprintf(
 			"%sYour ~age is: %s",
 			savedDataString,
 			HtmlFmt(fmt.Sprintf("%d", age), "code")),
@@ -80,8 +80,7 @@ func ProcessGender(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	_, _ = api.Send(edit)
 	database.UpdateData(update, map[string]interface{}{
 		"gender": strings.Split(text, " ")[1],
-		"age": age,
+		"age":    age,
 	})
 	database.UpdateState(update, database.InitialState)
 }
-

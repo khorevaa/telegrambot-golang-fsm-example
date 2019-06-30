@@ -1,16 +1,17 @@
 package main
 
 import (
-	"awesomeProject/callbacks"
-	"awesomeProject/consts"
-	"awesomeProject/database"
+	"log"
+	"os"
+	"strings"
+
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
-	"log"
-	"strings"
-	"os"
-)
 
+	"fsmExample/callbacks"
+	"fsmExample/consts"
+	"fsmExample/database"
+)
 
 // all "Messages" handler
 func MainMessageProcessor(api tgbotapi.BotAPI, update tgbotapi.Update) {
@@ -20,9 +21,9 @@ func MainMessageProcessor(api tgbotapi.BotAPI, update tgbotapi.Update) {
 
 	// handle commands
 	case state == database.InitialState: // empty state not initialized yet
-		if update.Message.Text == "/start"{
+		if update.Message.Text == "/start" {
 			go callbacks.CmdStart(api, update)
-		} else if update.Message.Text == "/stats"{
+		} else if update.Message.Text == "/stats" {
 			go callbacks.CmdStats(api, update)
 		}
 
@@ -45,12 +46,11 @@ func MainCallbackQueryProcessor(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	// check if Data has prefix ukey:
 	case state == database.InitialState && strings.HasPrefix(
 		update.CallbackQuery.Data,
-		consts.StatsCallbackDataPrefix + ":",
-		):
+		consts.StatsCallbackDataPrefix+":",
+	):
 		go callbacks.ProcessAbout(api, update)
 	}
 }
-
 
 // updates entry point
 func HandleUpdateBase(api tgbotapi.BotAPI) {
@@ -59,7 +59,7 @@ func HandleUpdateBase(api tgbotapi.BotAPI) {
 
 	updates, err := api.GetUpdatesChan(u)
 
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
@@ -72,7 +72,6 @@ func HandleUpdateBase(api tgbotapi.BotAPI) {
 		}
 	}
 }
-
 
 func main() {
 	// entry and initialization point

@@ -2,19 +2,21 @@
 
 // btw, that's a bad idea to store text messages in code
 
-
 package callbacks
 
 import (
-	"awesomeProject/consts"
-	"awesomeProject/database"
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"strconv"
 	"strings"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+
+	"fsmExample/consts"
+	"fsmExample/database"
 )
 
-func CmdStart(api tgbotapi.BotAPI, update tgbotapi.Update){
+// process /start
+func CmdStart(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	buttons := [][]tgbotapi.InlineKeyboardButton{
 		{
 			tgbotapi.NewInlineKeyboardButtonData("🔧", "toggle"),
@@ -43,9 +45,7 @@ func CmdStart(api tgbotapi.BotAPI, update tgbotapi.Update){
 	database.UpdateState(update, consts.ItemChoose)
 }
 
-
-
-func CmdStats(api tgbotapi.BotAPI, update tgbotapi.Update){
+func CmdStats(api tgbotapi.BotAPI, update tgbotapi.Update) {
 	all := database.GetAllKeys(10)
 
 	msg := tgbotapi.NewMessage(
@@ -53,7 +53,7 @@ func CmdStats(api tgbotapi.BotAPI, update tgbotapi.Update){
 		HtmlFmt("Here are all users, who participated:", "b"))
 	msg.ParseMode = "html"
 
-	if len(all) == 0{
+	if len(all) == 0 {
 		msg.Text = HtmlFmt("Oops! No one has participated...", "b")
 	}
 
@@ -61,7 +61,7 @@ func CmdStats(api tgbotapi.BotAPI, update tgbotapi.Update){
 
 	for key := range all {
 		button := []tgbotapi.InlineKeyboardButton{tgbotapi.NewInlineKeyboardButtonData(
-			fmt.Sprintf("%s) %s", strconv.FormatInt(int64(key + 1), 10), string(strings.Split(all[key], ":")[2])),
+			fmt.Sprintf("%s) %s", strconv.FormatInt(int64(key+1), 10), string(strings.Split(all[key], ":")[2])),
 			fmt.Sprintf("ukey:%s", string(all[key])))}
 
 		buttons = append(buttons, button)
@@ -72,5 +72,3 @@ func CmdStats(api tgbotapi.BotAPI, update tgbotapi.Update){
 	}
 	_, _ = api.Send(msg)
 }
-
-
